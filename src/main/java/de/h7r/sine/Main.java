@@ -31,8 +31,8 @@ public class Main {
 
     public static void main (String[] args)
             throws Exception {
-        // read configuration
 
+        // read configuration
         LOG.info ("SINE configuration server starting ...");
 
         SINEConfiguration conf = SINEConfiguration.fromSystemProperties ();
@@ -48,10 +48,9 @@ public class Main {
 
         LOG.info (String.format ("Reading properties data form store %s", configPath));
 
-        File env = new File (configPath, "envs");
-        Preconditions.checkArgument (env.exists (), "envs directory does not exist.");
+        File env = new File (configPath, SINEConstants.ENVS);
 
-        return walk ("", "envs", env.listFiles ());
+        return walk ("", SINEConstants.ENVS, env.listFiles ());
 
     }
 
@@ -156,11 +155,15 @@ class SINEConfiguration {
     public static SINEConfiguration fromSystemProperties ()
             throws IOException {
 
+        File storePath = new File (System.getProperty ("store", ".")).getCanonicalFile ();
+
+        File env = new File (storePath, SINEConstants.ENVS);
+        Preconditions.checkArgument (env.exists (), "Check your configuration/startup parameters: envs directory does not exist.");
+
         SINEConfiguration sc = new SINEConfiguration ();
 
         sc.setBindAddress (System.getProperty ("bindAddress", "0.0.0.0"));
         sc.setPort (Integer.parseInt (System.getProperty ("port", "7522")));
-        File storePath = new File (System.getProperty ("store", ".")).getCanonicalFile ();
 
         Preconditions.checkArgument (storePath.exists (), String.format ("storePath [%s] does not exist", storePath));
         Preconditions.checkArgument (storePath.isDirectory (), String.format ("storePath [%s] does not point to a directory", storePath));
