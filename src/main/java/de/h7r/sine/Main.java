@@ -1,23 +1,5 @@
 package de.h7r.sine;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -26,7 +8,22 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sun.corba.se.impl.orbutil.graph.Node;
+import org.apache.log4j.Logger;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Main {
 
@@ -62,6 +59,7 @@ public class Main {
                                   String currentName,
                                   File[] listFiles)
             throws IOException {
+
         Gson gson = new Gson ();
 
         SINENode n = new SINENode (prefix);
@@ -132,6 +130,7 @@ public class Main {
 
             private String coalesce (String v,
                                      String def) {
+
                 return v == null ? def : v;
             }
 
@@ -144,11 +143,13 @@ public class Main {
 }
 
 class SINEConfiguration {
+
     private String bindAddress;
-    private int    port;
-    private File   configPath;
+    private int port;
+    private File configPath;
 
     public String getBindAddress () {
+
         return bindAddress;
     }
 
@@ -170,34 +171,40 @@ class SINEConfiguration {
     }
 
     public void setBindAddress (String bindAddress) {
+
         this.bindAddress = bindAddress;
     }
 
     public int getPort () {
+
         return port;
     }
 
     public void setPort (int port) {
+
         this.port = port;
     }
 
     public File getConfigPath () {
+
         return configPath;
     }
 
     public void setConfigPath (File configPath) {
+
         this.configPath = configPath;
     }
 
     @Override
     public String toString () {
+
         return "SINEConfiguration [bindAddress=" + bindAddress + ", port=" + port + ", configPath=" + configPath + "]";
     }
 }
 
 class NodeRegistry {
 
-    private static final Logger          LOG   = Logger.getLogger (NodeRegistry.class);
+    private static final Logger LOG = Logger.getLogger (NodeRegistry.class);
 
     private static Map<String, SINENode> nodes = Maps.newHashMap ();
 
@@ -209,6 +216,7 @@ class NodeRegistry {
     }
 
     public static String get (String k) {
+
         if (!nodes.containsKey (k)) {
             return null;
         }
@@ -216,6 +224,7 @@ class NodeRegistry {
     }
 
     public static ImmutableSet<String> allKeys () {
+
         return ImmutableSet.copyOf (nodes.keySet ());
 
     }
@@ -224,21 +233,23 @@ class NodeRegistry {
 
 class SINENode {
 
-    private static final Logger LOG      = Logger.getLogger (SINENode.class);
+    private static final Logger LOG = Logger.getLogger (SINENode.class);
 
-    private Set<SINENode>       children = Sets.newHashSet ();
-    private String              prefix;
-    private String              localName;
-    private String              content;
-    private String              repr;
-    private boolean             closed   = false;
+    private Set<SINENode> children = Sets.newHashSet ();
+    private String prefix;
+    private String localName;
+    private String content;
+    private String repr;
+    private boolean closed = false;
 
-    public SINENode(String prefix2) {
+    public SINENode (String prefix2) {
+
         this.prefix = prefix2;
         NodeRegistry.register (this);
     }
 
     public void close () {
+
         Gson gson = new GsonBuilder ().create ();
         closed = true;
 
@@ -277,11 +288,15 @@ class SINENode {
     }
 
     public void setContent (List<String> readLines) {
+
         this.content = Joiner.on ("\n").join (readLines);
 
     }
 
-    public SINENode(String prefix2, String localName, List<String> readLines) {
+    public SINENode (String prefix2,
+                     String localName,
+                     List<String> readLines) {
+
         this (prefix2);
         this.localName = localName;
         setContent (readLines);
@@ -290,17 +305,20 @@ class SINENode {
     }
 
     public void addChild (SINENode v) {
+
         children.add (v);
 
         LOG.info (String.format ("adding child to %s: %s", this.localName, v));
     }
 
     public String getPrefix () {
+
         return prefix;
     }
 
     @Override
     public String toString () {
+
         Map<String, String> r = Maps.newHashMap ();
         r.put (localName, content);
         if (!children.isEmpty ()) {
@@ -312,10 +330,12 @@ class SINENode {
     }
 
     public String getLocalName () {
+
         return localName;
     }
 
     public void setLocalName (String localName) {
+
         this.localName = localName;
     }
 
