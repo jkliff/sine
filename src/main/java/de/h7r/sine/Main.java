@@ -27,6 +27,13 @@ import java.util.Set;
 
 public class Main {
 
+    static {
+        // if not given in the command line, set log file name to the default value.
+        if (System.getProperty ("sine_log_file") == null) {
+            System.setProperty ("sine_log_file", "sine.log");
+        }
+    }
+
     private static final Logger LOG = Logger.getLogger (Main.class);
 
     public static void main (String[] args)
@@ -106,24 +113,35 @@ public class Main {
                                 HttpServletResponse resp)
                     throws IOException, ServletException {
 
-                String p = req.getRequestURI ().substring (1);
-
                 resp.setContentType ("application/json");
-                String q = p.trim ().substring (4);
 
-                if (q.endsWith ("/")) {
-                    q = q.substring (0, Math.max (q.length () - 2, 0));
+                try {
+                    String p = req.getRequestURI ().substring (1);
+
+                    LOG.debug (String.format ("Handling request for %s", p));
+
+                    Preconditions.checkState (p.length () >= SINEConstants.ENVS.length (), "Unresolvable request: [%s].", p);
+                    String q = p.trim ().substring (SINEConstants.ENVS.length ());
+
+                    if (q.endsWith ("/")) {
+                        q = q.substring (0, Math.max (q.length () - 2, 0));
+                    }
+
+                    LOG.info ("query for " + q);
+
+                    String s = coalesce (NodeRegistry.get (q), "null");
+
+                    LOG.info (String.format ("%s -> %s", p, s));
+
+                    resp.setStatus (HttpServletResponse.SC_OK);
+                    resp.getWriter ().write (s);
+
+                } catch (Exception e) {
+                    LOG.error ("Unhandled error serving request.", e);
+                    resp.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                } finally {
+                    baseRequest.setHandled (true);
                 }
-
-                LOG.info ("query for " + q);
-                String s = coalesce (NodeRegistry.get (q), "null");
-                resp.setStatus (HttpServletResponse.SC_OK);
-
-                LOG.info (String.format ("%s -> %s", p, s));
-
-                resp.getWriter ().write (s);
-
-                baseRequest.setHandled (true);
 
             }
 
