@@ -120,21 +120,28 @@ public class Main {
 
                     LOG.debug (String.format ("Handling request for %s", p));
 
-                    Preconditions.checkState (p.length () >= SINEConstants.ENVS.length (), "Unresolvable request: [%s].", p);
-                    String q = p.trim ().substring (SINEConstants.ENVS.length ());
+                    if (p.startsWith (SINEConstants.META)) {
+                        throw new UnsupportedOperationException ();
+                    } else if (p.startsWith (SINEConstants.ENVS)) {
 
-                    if (q.endsWith ("/")) {
-                        q = q.substring (0, Math.max (q.length () - 2, 0));
+                        String q = p.trim ().substring (SINEConstants.ENVS.length ());
+
+                        if (q.endsWith ("/")) {
+                            q = q.substring (0, Math.max (q.length () - 2, 0));
+                        }
+
+                        LOG.info ("query for " + q);
+
+                        String s = coalesce (NodeRegistry.get (q), "null");
+
+                        LOG.info (String.format ("%s -> %s", p, s));
+
+                        resp.setStatus (HttpServletResponse.SC_OK);
+                        resp.getWriter ().write (s);
+
+                    } else {
+                        throw new IllegalArgumentException (String.format ("Don't know how to handle request to [%s]", p));
                     }
-
-                    LOG.info ("query for " + q);
-
-                    String s = coalesce (NodeRegistry.get (q), "null");
-
-                    LOG.info (String.format ("%s -> %s", p, s));
-
-                    resp.setStatus (HttpServletResponse.SC_OK);
-                    resp.getWriter ().write (s);
 
                 } catch (Exception e) {
                     LOG.error ("Unhandled error serving request.", e);
