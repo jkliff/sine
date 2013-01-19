@@ -76,7 +76,7 @@ public class Main {
         for (int i = 0; i < listFiles.length; i++) {
             String prefix2 = prefix + "/" + listFiles[i].getName ();
 
-            LOG.debug ("walking {} > {}", new Object [] {prefix, prefix2});
+            LOG.debug ("walking {} > {}", new Object[] {prefix, prefix2});
 
             if (listFiles[i].isDirectory ()) {
                 SINENode n1 = walk (prefix2, listFiles[i].getName (), listFiles[i].listFiles ());
@@ -90,7 +90,7 @@ public class Main {
             }
         }
 
-        LOG.trace ("Finished walking {}: {}", new Object [] {prefix, n});
+        LOG.trace ("Finished walking {}: {}", new Object[] {prefix, n});
         n.close ();
         return n;
     }
@@ -123,20 +123,34 @@ public class Main {
                     LOG.trace (String.format ("Handling request for %s", p));
 
                     if (p.startsWith (SINEConstants.META)) {
+
+                        // + 1 to remove the leading '/'
+                        String cmd = p.trim ().substring (SINEConstants.META.length () + 1);
+
+                        LOG.debug ("Received command {} {}", new Object[] {p, cmd});
+                        switch (cmd) {
+                            case "update":
+                                LOG.warn ("STARTING BASE UPDATE should lock, yadda yadda...");
+                                break;
+                            default:
+                                LOG.error ("Received bad management request {}", new Object[] {p});
+                                resp.setStatus (HttpServletResponse.SC_BAD_REQUEST);
+                        }
+
                         throw new UnsupportedOperationException ();
                     } else if (p.startsWith (SINEConstants.ENVS)) {
 
                         String q = p.trim ().substring (SINEConstants.ENVS.length ());
 
                         if (q.endsWith ("/")) {
-                            q = q.substring (0, Math.max (q.length () - 2, 0));                     
+                            q = q.substring (0, Math.max (q.length () - 2, 0));
                         }
 
                         LOG.debug ("query for " + q);
 
                         String s = coalesce (NodeRegistry.get (q), "null");
 
-                        LOG.debug ("processed: {} -> {}", new Object [] {p, s});
+                        LOG.debug ("processed: {} -> {}", new Object[] {p, s});
 
                         resp.setStatus (HttpServletResponse.SC_OK);
                         resp.getWriter ().write (s);
@@ -233,35 +247,6 @@ class SINEConfiguration {
     }
 }
 
-class NodeRegistry {
-
-    private static final Logger LOG = LoggerFactory.getLogger (NodeRegistry.class);
-
-    private static Map<String, SINENode> nodes = Maps.newHashMap ();
-
-    public static void register (SINENode sineNode) {
-
-        nodes.put (sineNode.getPrefix (), sineNode);
-        LOG.info ("Registering creation of node " + sineNode.getPrefix ());
-
-    }
-
-    public static String get (String k) {
-
-        if (!nodes.containsKey (k)) {
-            return null;
-        }
-        return nodes.get (k).getRepr ();
-    }
-
-    public static ImmutableSet<String> allKeys () {
-
-        return ImmutableSet.copyOf (nodes.keySet ());
-
-    }
-
-}
-
 class SINENode {
 
     private static final Logger LOG = LoggerFactory.getLogger (SINENode.class);
@@ -339,7 +324,7 @@ class SINENode {
 
         children.add (v);
 
-        LOG.trace (String.format ("adding child to %s: %s", this.localName, v) );
+        LOG.trace (String.format ("adding child to %s: %s", this.localName, v));
     }
 
     public String getPrefix () {
