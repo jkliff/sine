@@ -120,7 +120,7 @@ public class Main {
                 try {
                     String p = req.getRequestURI ().substring (1);
 
-                    LOG.debug (String.format ("Handling request for %s", p));
+                    LOG.trace (String.format ("Handling request for %s", p));
 
                     if (p.startsWith (SINEConstants.META)) {
                         throw new UnsupportedOperationException ();
@@ -132,17 +132,18 @@ public class Main {
                             q = q.substring (0, Math.max (q.length () - 2, 0));                     
                         }
 
-                        LOG.info ("query for " + q);
+                        LOG.debug ("query for " + q);
 
                         String s = coalesce (NodeRegistry.get (q), "null");
 
-                        LOG.info (String.format ("%s -> %s", p, s));
+                        LOG.debug ("processed: {} -> {}", new Object [] {p, s});
 
                         resp.setStatus (HttpServletResponse.SC_OK);
                         resp.getWriter ().write (s);
 
                     } else {
-                        throw new IllegalArgumentException (String.format ("Don't know how to handle request to [%s]", p));
+                        LOG.debug ("Don't know how to handle request to [{}]", p);
+                        resp.setStatus (HttpServletResponse.SC_BAD_REQUEST);
                     }
 
                 } catch (Exception e) {
