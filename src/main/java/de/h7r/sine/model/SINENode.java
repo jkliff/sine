@@ -33,9 +33,7 @@ public class SINENode {
     private boolean closed = false;
 
     public SINENode (String prefix2) {
-
         this.prefix = prefix2;
-        //NodeRegistry.register (this);
     }
 
     public void close () {

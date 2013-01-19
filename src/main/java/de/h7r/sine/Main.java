@@ -66,6 +66,9 @@ public class Main {
         SINENode n = new SINENode (prefix);
         n.setLocalName (currentName);
 
+        // FIXME: remove this after there's support for aspectj-compiler-plugin to java 1.7
+        NodeRegistry.register (n);
+        
         for (int i = 0; i < listFiles.length; i++) {
             String prefix2 = prefix + "/" + listFiles[i].getName ();
 
@@ -121,7 +124,7 @@ public class Main {
                         String cmd = p.trim ().substring (SINEConstants.META.length () + 1);
 
                         LOG.debug ("Received command {} {}", new Object[] {p, cmd});
-                        /*switch (cmd) {
+                        switch (cmd) {
                             case "update":
                                 LOG.warn ("STARTING BASE UPDATE should lock, yadda yadda...");
                                 
@@ -129,7 +132,7 @@ public class Main {
                             default:
                                 LOG.error ("Received bad management request {}", new Object[] {p});
                                 resp.setStatus (HttpServletResponse.SC_BAD_REQUEST);
-                        } */
+                        } 
                         
                     } else if (p.startsWith (SINEConstants.ENVS)) {
 

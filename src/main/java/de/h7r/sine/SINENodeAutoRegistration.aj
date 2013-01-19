@@ -6,11 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created with IntelliJ IDEA.
- * User: john
- * Date: 1/19/13
- * Time: 1:58 PM
- * To change this template use File | Settings | File Templates.
+ * NOT USED until there is support from aspectj-maven-plugin for java 7.
  */
 public aspect SINENodeAutoRegistration {
 
