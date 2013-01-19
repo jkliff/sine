@@ -1,22 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.h7r</groupId>
     <artifactId>sine</artifactId>
     <version>0.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <!-- repositories> <repository> <id>Sonatype-public</id> <name>SnakeYAML 
-        repository</name> <url>http://oss.sonatype.org/content/groups/public/</url> 
-        </repository> </repositories -->
-
-
     <dependencies>
 
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.2</version>
         </dependency>
 
         <dependency>
@@ -63,7 +58,7 @@
                 <configuration>
                     <transformers>
                         <transformer
-                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                             <!-- Main class -->
                             <mainClass>de.h7r.sine.Main</mainClass>
                         </transformer>
@@ -90,6 +85,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>

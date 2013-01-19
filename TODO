@@ -2,4 +2,5 @@ reload of configuration
 status view
 reload command
 jmx bindings
-configurable log output
+DONE configurable log output
+DONE use slf4j instead of log4j

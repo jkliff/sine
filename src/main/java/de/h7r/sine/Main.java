@@ -8,12 +8,13 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +35,7 @@ public class Main {
         }
     }
 
-    private static final Logger LOG = Logger.getLogger (Main.class);
+    private static final Logger LOG = LoggerFactory.getLogger (Main.class);
 
     public static void main (String[] args)
             throws Exception {
@@ -74,7 +75,7 @@ public class Main {
         for (int i = 0; i < listFiles.length; i++) {
             String prefix2 = prefix + "/" + listFiles[i].getName ();
 
-            LOG.debug (String.format ("wakling %s > %s", prefix, prefix2));
+            LOG.debug ("walking {} > {}", new Object [] {prefix, prefix2});
 
             if (listFiles[i].isDirectory ()) {
                 SINENode n1 = walk (prefix2, listFiles[i].getName (), listFiles[i].listFiles ());
@@ -127,7 +128,7 @@ public class Main {
                         String q = p.trim ().substring (SINEConstants.ENVS.length ());
 
                         if (q.endsWith ("/")) {
-                            q = q.substring (0, Math.max (q.length () - 2, 0));
+                            q = q.substring (0, Math.max (q.length () - 2, 0));                     
                         }
 
                         LOG.info ("query for " + q);
@@ -232,7 +233,7 @@ class SINEConfiguration {
 
 class NodeRegistry {
 
-    private static final Logger LOG = Logger.getLogger (NodeRegistry.class);
+    private static final Logger LOG = LoggerFactory.getLogger (NodeRegistry.class);
 
     private static Map<String, SINENode> nodes = Maps.newHashMap ();
 
@@ -261,7 +262,7 @@ class NodeRegistry {
 
 class SINENode {
 
-    private static final Logger LOG = Logger.getLogger (SINENode.class);
+    private static final Logger LOG = LoggerFactory.getLogger (SINENode.class);
 
     private Set<SINENode> children = Sets.newHashSet ();
     private String prefix;
