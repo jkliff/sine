@@ -54,7 +54,7 @@ public class Main {
     private static SINENode buildData (File configPath)
             throws IOException {
 
-        LOG.info (String.format ("Reading properties data form store %s", configPath));
+        LOG.info (String.format ("Reading properties data from store %s", configPath));
 
         File env = new File (configPath, SINEConstants.ENVS);
 
