@@ -1,0 +1,10 @@
+SINE (SINE Is Not Escape)
+
+SINE is designed with the following in mind:
+- Sine is supposed to serve static configuration organized in a tree;
+- access must be very fast, ideally fetching predefined data from memory;
+- must be self contained (single jar file contains all software and dependencies; any host with a Java JVM runs it).
+
+Usage:
+
+java -Dsine_log_file=/home/john/apps/sine/sine.log -Dstore=/home/john/apps/sine/confs -jar /home/john/apps/sine/sine.jar
