@@ -2,6 +2,7 @@ package de.h7r.sine;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import de.h7r.sine.model.SINENode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +15,7 @@ import java.util.Map;
  * Time: 1:45 PM
  * To change this template use File | Settings | File Templates.
  */
-class NodeRegistry {
+public class NodeRegistry {
 
     private static final Logger LOG = LoggerFactory.getLogger (NodeRegistry.class);
 
