@@ -41,7 +41,8 @@ public class Main {
             throws Exception {
 
         // read configuration
-        LOG.info ("SINE configuration server starting ...");
+        LOG.warn ("/****************************************************************");
+        LOG.warn ("SINE configuration server starting ...");
 
         SINEConfiguration conf = SINEConfiguration.fromSystemProperties ();
 
@@ -80,7 +81,7 @@ public class Main {
             if (listFiles[i].isDirectory ()) {
                 SINENode n1 = walk (prefix2, listFiles[i].getName (), listFiles[i].listFiles ());
                 n.addChild (n1);
-                LOG.debug ("pushed node on " + prefix2 + ", as " + n1);
+                LOG.trace ("Is now parent of (pushed node on) " + prefix2 + ", as " + n1);
 
             } else {
                 SINENode c = new SINENode (prefix2, listFiles[i].getName (), Files.readLines (listFiles[i], Charset.defaultCharset ()));
@@ -89,7 +90,7 @@ public class Main {
             }
         }
 
-        LOG.debug (String.format ("%s: %s", prefix, n));
+        LOG.trace ("Finished walking {}: {}", new Object [] {prefix, n});
         n.close ();
         return n;
     }
@@ -240,7 +241,7 @@ class NodeRegistry {
     public static void register (SINENode sineNode) {
 
         nodes.put (sineNode.getPrefix (), sineNode);
-        LOG.debug ("Registering creation of node " + sineNode.getPrefix ());
+        LOG.info ("Registering creation of node " + sineNode.getPrefix ());
 
     }
 
@@ -330,14 +331,14 @@ class SINENode {
         this.localName = localName;
         setContent (readLines);
 
-        LOG.info ("created node \t" + prefix2 + ", " + localName);
+        LOG.debug ("created node \t" + prefix2 + ", " + localName);
     }
 
     public void addChild (SINENode v) {
 
         children.add (v);
 
-        LOG.info (String.format ("adding child to %s: %s", this.localName, v));
+        LOG.trace (String.format ("adding child to %s: %s", this.localName, v) );
     }
 
     public String getPrefix () {
