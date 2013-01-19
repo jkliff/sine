@@ -8,13 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA.
- * User: john
- * Date: 1/19/13
- * Time: 1:45 PM
- * To change this template use File | Settings | File Templates.
- */
 public class NodeRegistry {
 
     private static final Logger LOG = LoggerFactory.getLogger (NodeRegistry.class);
