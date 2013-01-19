@@ -21,6 +21,8 @@ import java.nio.charset.Charset;
 
 public class Main {
 
+    private static SINEConfiguration conf;
+
     static {
         // if not given in the command line, set log file name to the default value.
         if (System.getProperty ("sine_log_file") == null) {
@@ -37,28 +39,29 @@ public class Main {
         LOG.warn ("/****************************************************************");
         LOG.warn ("SINE configuration server starting ...");
 
-        SINEConfiguration conf = SINEConfiguration.fromSystemProperties ();
+        Main.conf = SINEConfiguration.fromSystemProperties ();
 
-        buildData (conf.getConfigPath ());
+        buildData (Main.conf.getConfigPath ());
 
         // startup jetty with rest interface
-        startServerAndListen (conf);
+        startServerAndListen (Main.conf);
     }
 
-    private static SINENode buildData (File configPath)
+    private static void buildData (File configPath)
             throws IOException {
 
         LOG.info (String.format ("Reading properties data from store %s", configPath));
 
         File env = new File (configPath, SINEConstants.ENVS);
 
-        return walk ("", SINEConstants.ENVS, env.listFiles ());
+        NodeRegistry.truncate ();
+        walkAndRegister ("", SINEConstants.ENVS, env.listFiles ());
 
     }
 
-    private static SINENode walk (String prefix,
-                                  String currentName,
-                                  File[] listFiles)
+    private static SINENode walkAndRegister (String prefix,
+                                             String currentName,
+                                             File[] listFiles)
             throws IOException {
 
         Gson gson = new Gson ();
@@ -68,14 +71,14 @@ public class Main {
 
         // FIXME: remove this after there's support for aspectj-compiler-plugin to java 1.7
         NodeRegistry.register (n);
-        
+
         for (int i = 0; i < listFiles.length; i++) {
             String prefix2 = prefix + "/" + listFiles[i].getName ();
 
             LOG.debug ("walking {} > {}", new Object[] {prefix, prefix2});
 
             if (listFiles[i].isDirectory ()) {
-                SINENode n1 = walk (prefix2, listFiles[i].getName (), listFiles[i].listFiles ());
+                SINENode n1 = walkAndRegister (prefix2, listFiles[i].getName (), listFiles[i].listFiles ());
                 n.addChild (n1);
                 LOG.trace ("Is now parent of (pushed node on) " + prefix2 + ", as " + n1);
 
@@ -127,13 +130,13 @@ public class Main {
                         switch (cmd) {
                             case "update":
                                 LOG.warn ("STARTING BASE UPDATE should lock, yadda yadda...");
-                                
+                                buildData (Main.conf.getConfigPath ());
                                 break;
                             default:
                                 LOG.error ("Received bad management request {}", new Object[] {p});
                                 resp.setStatus (HttpServletResponse.SC_BAD_REQUEST);
-                        } 
-                        
+                        }
+
                     } else if (p.startsWith (SINEConstants.ENVS)) {
 
                         String q = p.trim ().substring (SINEConstants.ENVS.length ());

@@ -8,3 +8,5 @@ SINE is designed with the following in mind:
 Usage:
 
 java -Dsine_log_file=/home/john/apps/sine/sine.log -Dstore=/home/john/apps/sine/confs -jar /home/john/apps/sine/sine.jar
+
+To update base send a GET request to /:meta/update

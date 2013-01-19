@@ -41,7 +41,7 @@ public class SINENode {
         Gson gson = new GsonBuilder ().create ();
         closed = true;
 
-        LOG.info ("finished " + prefix);
+        LOG.debug ("finished " + prefix);
         if (children.isEmpty ()) {
             repr = gson.toJson (content);
         } else {
@@ -49,7 +49,7 @@ public class SINENode {
             sb.append ("{");
             boolean more = false;
             for (SINENode n : children) {
-                LOG.info ("local name on building: " + n.getLocalName ());
+                LOG.debug ("local name on building: " + n.getLocalName ());
 
                 if (more) {
                     sb.append (",");

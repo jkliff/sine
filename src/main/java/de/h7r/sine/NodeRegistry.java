@@ -28,6 +28,12 @@ public class NodeRegistry {
 
     }
 
+    // FIXME: threadsafety
+    public static void truncate () {
+        LOG.info ("TRUNCATING NODES!");
+        nodes = Maps.newHashMap ();
+    }
+
     public static String get (String k) {
 
         if (!nodes.containsKey (k)) {
