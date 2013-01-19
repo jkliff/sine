@@ -31,7 +31,7 @@ public class Main {
     static {
         // if not given in the command line, set log file name to the default value.
         if (System.getProperty ("sine_log_file") == null) {
-            System.setProperty ("sine_log_file", "sine.log");
+            System.setProperty ("sine_log_file", SINEConstants.DEFAULT_OUTPUT_LOG_FILE);
         }
     }
 
@@ -188,8 +188,8 @@ class SINEConfiguration {
 
         SINEConfiguration sc = new SINEConfiguration ();
 
-        sc.setBindAddress (System.getProperty ("bindAddress", "0.0.0.0"));
-        sc.setPort (Integer.parseInt (System.getProperty ("port", "7522")));
+        sc.setBindAddress (System.getProperty ("bindAddress", SINEConstants.DEFAULT_BIND_ADDRESS));
+        sc.setPort (Integer.parseInt (System.getProperty ("port", SINEConstants.DEFAULT_PORT)));
 
         Preconditions.checkArgument (storePath.exists (), String.format ("storePath [%s] does not exist", storePath));
         Preconditions.checkArgument (storePath.isDirectory (), String.format ("storePath [%s] does not point to a directory", storePath));
